@@ -27,7 +27,7 @@ class game_state extends Phaser.Scene {
         this.centerY = 1080 / 2;
         this.speed = 500;
         this.scale = 0.3;
-        this.tolerance = 50;
+        this.tolerance = 10;
     }
     
     preload() {
@@ -58,6 +58,7 @@ class game_state extends Phaser.Scene {
         
         this.waitress = this.physics.add.sprite(this.centerX, this.centerY, 'waitress_ideal');
         this.waitress.setScale(this.scale);
+        this.waitress.setOrigin(0.5, 1);
 //        this.waitress.anchor.setTo(0.5, 0.5);
 //        this.waitress.setBounce(0.2);
         this.waitress.setCollideWorldBounds(true);
@@ -137,11 +138,8 @@ class game_state extends Phaser.Scene {
             var vx = this.speed*dx/d;
             var vy = this.speed*dy/d;
             
-//            console.log('ok');
-            this.stop();
             if (this.img) this.img.destroy();
             this.img = this.add.image(x, y, 'destination').setOrigin(0.5, 0.5);
-//            this.img.destroy();
             this.destination =  {
                 x: x,
                 y: y,
@@ -159,15 +157,13 @@ class game_state extends Phaser.Scene {
         }
         
         if (this.cursors.left.isDown){
-            this.setDestination(this.waitress.x - this.tolerance - 1, this.waitress.y);
+            this.setDestination(this.waitress.x - 2 * this.tolerance, this.waitress.y);
         } else if (this.cursors.right.isDown){
-            this.setDestination(this.waitress.x + this.tolerance + 1, this.waitress.y);
+            this.setDestination(this.waitress.x + 2 * this.tolerance, this.waitress.y);
         } else if (this.cursors.up.isDown) {
-            this.setDestination(this.waitress.x, this.waitress.y - this.tolerance - 1);
+            this.setDestination(this.waitress.x, this.waitress.y - 2 * this.tolerance);
         } else if (this.cursors.down.isDown) {
-            this.setDestination(this.waitress.x, this.waitress.y + this.tolerance + 1);
-        } else {
-//            this.stop();
+            this.setDestination(this.waitress.x, this.waitress.y + 2 * this.tolerance);
         }
         
         this.moveLeft = function(){
@@ -189,6 +185,7 @@ class game_state extends Phaser.Scene {
         }
         
         this.input.on('pointerdown', function(event) {
+            this.stop();
             this.setDestination(this.input.x, this.input.y);            
         }, this);
         
