@@ -214,21 +214,7 @@ class game_state extends Phaser.Scene {
                 this.clearDestination();
             }
             
-//            if (this.waitress.x + this.tolerance < this.destination.x) {
-//                this.moveRight();
-//            } else if (this.waitress.x - this.tolerance > this.destination.x) {
-//                this.moveLeft();
-//            } else { 
-//                this.waitress.setVelocityX(0);
-//                if (this.waitress.y + this.tolerance < this. destination.y) {
-//                    this.moveDown();
-//                } else if (this.waitress.y - this.tolerance > this.destination.y) {
-//                    this.moveUp();
-//                } else {
-//                    this.stop();
-//                    this.clearDestination();
-//                }
-//            }
+
         }
     }
 }
