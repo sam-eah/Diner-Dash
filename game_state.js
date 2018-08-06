@@ -1,25 +1,3 @@
-//var demo = {};
-//demo.game_state = function () {};
-//demo.game_state.prototype = {
-//    centerX: 1920 / 2,
-//    centerY: 1080 / 2,
-////    image_path: '',
-////    with_food: false,
-////    direction: 2,
-//    preload: function () {
-//        game.load.image('background', 'assets/backgrounds/game_play_bg.png');
-//        var waitress = game.load.image('waitress', 'assets/sprites/Waiterss/Ideal/00001.png');
-//        waitress.anchor.setTo(0.5, 0.5);
-//    },
-//    create: function () {
-//        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-//        
-//        game.add.sprite(0, 0, 'background');
-//        game.add.sprite(this.centerX, this.centerY, 'waitress');
-//    },
-//    update: function () {}
-//};
-
 class game_state extends Phaser.Scene {
     constructor() {
         super({key:"game_state"});
@@ -53,17 +31,12 @@ class game_state extends Phaser.Scene {
     }
     
     create(){
-//        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.background = this.add.image(0, 0, 'background').setOrigin(0, 0);
         
         this.waitress = this.physics.add.sprite(this.centerX, this.centerY, 'waitress_ideal');
         this.waitress.setScale(this.scale);
         this.waitress.setOrigin(0.5, 1);
-//        this.waitress.anchor.setTo(0.5, 0.5);
-//        this.waitress.setBounce(0.2);
         this.waitress.setCollideWorldBounds(true);
-//        this.waitress.setSize(1, 1, true);
-        this.waitress;
         
         this.anims.create({
             key: 'back',
@@ -91,14 +64,6 @@ class game_state extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
-
-        
-//        this.input.on('pointerdown', function(event) {
-////            this.waitress.x = event.x;
-////            this.waitress.y = event.y;
-////            this.waitress.moveToPointer();
-//            this.physics.moveTo(this.waitress, this.input.x, this.input.y, null, 750);
-//        }, this);
         
         this.key_Z = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         this.key_Q = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
@@ -117,19 +82,6 @@ class game_state extends Phaser.Scene {
     }
     
     update(){
-//        if (this.key_Q.isDown) {
-//            this.moveLeft();
-//        } else if (this.key_D.isDown) {
-//            this.moveRight();
-//        } else if (this.key_Z.isDown) {
-//            this.moveUp();
-//        } else if (this.key_S.isDown) {
-//            this.moveDown();
-//        } else {
-////            this.waitress.setVelocityX(0);
-////            this.waitress.setVelocityY(0);
-////            this.waitress.anims.play('ideal', true);
-//        };
         
         this.setDestination = function(x, y) {
             var dx = x - this.waitress.x;
