@@ -17,7 +17,7 @@ var GamePlay = {
         
         this.physics.startSystem(Phaser.Physics.ARCADE);
         
-        
+        // BG
         this.add.sprite(0, 0, 'background');
         
         // UI 
@@ -26,13 +26,32 @@ var GamePlay = {
         this.add.sprite(110, 10, 'uiface');
         this.add.sprite(1830, 10, 'pause');
         
+        // COOK
+        this.cook1 = this.add.sprite(1250, 300, 'cook_front');
+        this.cook1.scale.setTo(0.9);
+        
+        this.cook2 = this.add.sprite(1000, 180, 'cook_back');
+        this.cook2.scale.setTo(0.9);
+        
+        // COUNTER
         this.add.sprite(450, 350, 'counter');
-        
-        this.podium = this.add.sprite(430, 850, 'podium');
-        this.closeSign = this.add.sprite(220, 920, 'close');
-        
         this.add.sprite(720, 430, 'foodcover');
         this.add.sprite(860, 430, 'foodcover');
+        
+        // CUSTOMERS
+        this.girlGroup = this.add.group();
+        this.girl1 = this.add.sprite(40, 760, 'girl1');
+        this.girl1.anchor.setTo(0.5, 1);
+        this.girl2 = this.add.sprite(120, 760, 'girl2');
+        this.girl2.anchor.setTo(0.5, 1);
+        this.girlGroup.add(this.girl1);
+        this.girlGroup.add(this.girl2);
+        
+        this.manGroup = this.add.group();
+        this.man1 = this.add.sprite(200, 700, 'man1');
+        this.man2 = this.add.sprite(280, 700, 'man2');
+        this.manGroup.add(this.man1);
+        this.manGroup.add(this.man2);
         
         this.tableGroup = []
         this.group1 = this.add.group();
@@ -63,6 +82,10 @@ var GamePlay = {
         this.tableGroup[3].moveAll(this.group2);
         this.tableGroup[4].moveAll(this.group2);
         this.tableGroup[5].moveAll(this.group2);
+        
+        
+        this.podium = this.add.sprite(430, 850, 'podium');
+        this.closeSign = this.add.sprite(220, 920, 'close');
         
         this.group2.add(this.podium);
         this.group2.add(this.closeSign);

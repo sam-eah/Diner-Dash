@@ -32,32 +32,51 @@ var Preload = {
     
     start: function() {
         cnt_files = 0;
-        this.loadImage('main_bg',     './assets/backgrounds/main_bg.png');
+        this.loadImage('main_bg',       './assets/backgrounds/main_bg.png');
         
-        this.load.image('background', 'assets/backgrounds/game_play_bg.png');
+        this.load.image('background',   'assets/backgrounds/game_play_bg.png');
         this.loadImage('counter',       './assets/sprites/counter.png');
-        this.loadImage('chair',       './assets/sprites/chair.png');
-        this.loadImage('table',       './assets/sprites/table.png');
-        this.loadImage('podium',       './assets/sprites/podium.png');
-        this.loadImage('close',       './assets/sprites/close.png');
+        this.loadImage('chair',         './assets/sprites/chair.png');
+        this.loadImage('table',         './assets/sprites/table.png');
+        this.loadImage('podium',        './assets/sprites/podium.png');
+        this.loadImage('close',         './assets/sprites/close.png');
         
         
-        this.loadImage('food1',       './assets/sprites/food1.png');
-        this.loadImage('food2',       './assets/sprites/food2.png');
-        this.loadImage('food3',       './assets/sprites/food3.png');
-        this.loadImage('food4',       './assets/sprites/food4.png');
-        this.loadImage('food5',       './assets/sprites/food5.png');
-        this.loadImage('food6',       './assets/sprites/food6.png');
-        this.loadImage('foodcover',       './assets/sprites/foodcover.png');
+        this.loadImage('food1',         './assets/sprites/food1.png');
+        this.loadImage('food2',         './assets/sprites/food2.png');
+        this.loadImage('food3',         './assets/sprites/food3.png');
+        this.loadImage('food4',         './assets/sprites/food4.png');
+        this.loadImage('food5',         './assets/sprites/food5.png');
+        this.loadImage('food6',         './assets/sprites/food6.png');
+        this.loadImage('foodcover',     './assets/sprites/foodcover.png');
         
-        this.loadImage('hud_base',       './assets/sprites/hud_base.png');
-        this.loadImage('uiface',       './assets/sprites/uiface.png');
-        this.loadImage('pause',       './assets/sprites/pause.png');
-        this.loadImage('wood_board',       './assets/sprites/wood_board.png');
+        this.loadImage('hud_base',      './assets/sprites/hud_base.png');
+        this.loadImage('uiface',        './assets/sprites/uiface.png');
+        this.loadImage('pause',         './assets/sprites/pause.png');
+        this.loadImage('wood_board',    './assets/sprites/wood_board.png');
         
         
-        this.load.image('destination', 'assets/sprites/destination.png');
+        this.load.image('destination',  'assets/sprites/destination.png');
         
+        // COOK
+        this.loadImage('cook_back',     './assets/sprites/cook_back.png');
+        this.loadImage('cook_front',    './assets/sprites/cook_front.png');
+        
+        // CUSTOMERS 
+        this.loadImage('man1',          './assets/sprites/man1.png');
+        this.loadImage('man1_sit',      './assets/sprites/man1_sit.png');
+        
+        this.loadImage('man2',          './assets/sprites/man2.png');
+        this.loadImage('man2_sit',      './assets/sprites/man2_sit.png');
+        
+        this.loadImage('girl1',         './assets/sprites/girl1.png');
+        this.loadImage('girl1_sit',     './assets/sprites/girl1_sit.png');
+        
+        this.loadImage('girl2',         './assets/sprites/girl2.png');
+        this.loadImage('girl2_sit',     './assets/sprites/girl2_sit.png');
+        
+        
+        // WAITRESS
         this.load.spritesheet('waitress_back',
                               'assets/spitesheets/waitress/back.png', 300, 775);
         this.load.spritesheet('waitress_front',
