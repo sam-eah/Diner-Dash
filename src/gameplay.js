@@ -53,14 +53,14 @@ var GamePlay = {
         this.manGroup.add(this.man1);
         this.manGroup.add(this.man2);
         
-        this.tableGroup = []
-        this.group1 = this.add.group();
-        this.group2 = this.add.group();
+//        this.tableGroup = []
+        this.tableList = [];
+        this.priorityGroup = [];
         
         for  (var y = 0; y < 2; y++){
+            newgroup = this.add.group();
             
             for (var x = 0; x < 3; x++) {
-                var newgroup = this.add.group()
                 newgroup.enableBody = true;
                 newgroup.physicsBodyType = Phaser.Physics.ARCADE;
                 
@@ -69,27 +69,35 @@ var GamePlay = {
                 var chair2 = this.add.sprite(COLX[x] +140, ROWY[y] -20, 'chair');
                 var table = this.add.sprite(COLX[x], ROWY[y], 'table');
                 
+                var tableSet = {
+                    table: table,
+                    chair1: chair1,
+                    chair2: chair2
+                };
+                
                 newgroup.add( chair1 );
                 newgroup.add( chair2 );
                 newgroup.add( table );
-                this.tableGroup.push(newgroup);
+                
+                this.tableList.push(tableSet);
+                
             }
+//            this.tableGroup[0].moveAll(newgroup);
+//            this.tableGroup[1].moveAll(newgroup);
+//            this.tableGroup[2].moveAll(newgroup);
+            
+            this.priorityGroup.push(newgroup);
+            
         }
-        this.tableGroup[0].moveAll(this.group1);
-        this.tableGroup[1].moveAll(this.group1);
-        this.tableGroup[2].moveAll(this.group1);
-        
-        this.tableGroup[3].moveAll(this.group2);
-        this.tableGroup[4].moveAll(this.group2);
-        this.tableGroup[5].moveAll(this.group2);
         
         
         this.podium = this.add.sprite(430, 850, 'podium');
         this.closeSign = this.add.sprite(220, 920, 'close');
         
-        this.group2.add(this.podium);
-        this.group2.add(this.closeSign);
+        this.priorityGroup[1].add(this.podium);
+        this.priorityGroup[1].add(this.closeSign);
         
+        console.log(this.priorityGroup);
         
         this.waitress = this.add.sprite(600, 680, 'waitress_ideal');
         this.destination = this.add.sprite(0, 0, 'destination');
@@ -262,12 +270,12 @@ var GamePlay = {
         
         this.world.bringToTop(this.waitress);
         if (this.waitress.y <= 870) {
-            this.world.bringToTop(this.group1);
+            this.world.bringToTop(this.priorityGroup[0]);
             
         } else if (this.waitress.y <= 1000) {
             
             this.world.bringToTop(this.waitress);
-            this.world.bringToTop(this.group2);
+            this.world.bringToTop(this.priorityGroup[1]);
         } else {
             this.world.bringToTop(this.waitress);
         }
