@@ -6,6 +6,8 @@ var GamePlay = {
     speed: 500,
     wscale: 0.4,
     tolerance: 10,
+    selecter: 'waitress',
+    dragging: false,
 //    image_path: '',
 //    with_food: false,
 //    direction: 2,
@@ -50,34 +52,37 @@ var GamePlay = {
         this.manGroup = this.add.group();
         this.man1 = this.add.sprite(200, 700, 'man1');
         this.man2 = this.add.sprite(280, 700, 'man2');
+        
+        this.man1.enableBody = true;
+        this.man1.physicsBodyType = Phaser.Physics.ARCADE;
+        this.man1.inputEnabled = true;
+        
         this.manGroup.add(this.man1);
         this.manGroup.add(this.man2);
+        
+
         
 //        this.tableGroup = []
         this.tableList = [];
         this.priorityGroup = [];
         
-        for  (var y = 0; y < 2; y++){
+        for (var y = 0; y < 2; y++){
             newgroup = this.add.group();
             
             for (var x = 0; x < 3; x++) {
                 newgroup.enableBody = true;
                 newgroup.physicsBodyType = Phaser.Physics.ARCADE;
                 
-                var chair1 = this.add.sprite(COLX[x] , ROWY[y] -20, 'chair')
-                chair1.scale.setTo(-1, 1);
-                var chair2 = this.add.sprite(COLX[x] +140, ROWY[y] -20, 'chair');
-                var table = this.add.sprite(COLX[x], ROWY[y], 'table');
-                
                 var tableSet = {
-                    table: table,
-                    chair1: chair1,
-                    chair2: chair2
+                    table: this.add.sprite(COLX[x], ROWY[y], 'table'),
+                    chair1: chair1 = this.add.sprite(COLX[x] + 150, ROWY[y] -20, 'chair'),
+                    chair2: this.add.sprite(COLX[x], ROWY[y] -20, 'chair')
                 };
+                tableSet.chair2.scale.setTo(-1, 1);
                 
-                newgroup.add( chair1 );
-                newgroup.add( chair2 );
-                newgroup.add( table );
+                newgroup.add( tableSet.chair1 );
+                newgroup.add( tableSet.chair2 );
+                newgroup.add( tableSet.table );
                 
                 this.tableList.push(tableSet);
                 
@@ -96,8 +101,6 @@ var GamePlay = {
         
         this.priorityGroup[1].add(this.podium);
         this.priorityGroup[1].add(this.closeSign);
-        
-        console.log(this.priorityGroup);
         
         this.waitress = this.add.sprite(600, 680, 'waitress_ideal');
         this.destination = this.add.sprite(0, 0, 'destination');
@@ -125,6 +128,22 @@ var GamePlay = {
         this.waitress.animations.add('ideal', this.foo, 10, true);
         this.waitress.animations.play('ideal');
         
+        
+//        this.manGroup.inputEnableChildren = true;
+//        this.man1.inputEnabled = true;
+//        this.man1.events.onInputDown.add(this.manMove, this);
+        
+        this.manGroup.setAll('inputEnabled', true);
+        this.manGroup.onChildInputDown.add(this.dragStart, this);
+        this.manGroup.onChildInputUp.add(this.dragStop, this);
+        
+//        this.manGroup.input.enableDrag();
+//        this.manGroup.callAll('input.enableDrag');
+        
+        this.game.debug.body(this.man1, 'rgba(255,0,0,0.5)');
+        this.game.debug.reset();
+//        console.log(this);
+
     },
     update: function () {        
         
@@ -162,11 +181,17 @@ var GamePlay = {
         
         this.input.onDown.addOnce(this.tpWaitress, this);
         
-
+        
+//        for (var i = 0; i < 6; i++){
         
         
         if (this.destination.body.enable) {
             this.physics.arcade.overlap(this.waitress, this.destination, this.arriveDestination(this));
+        }
+        
+        if (this.dragging) {
+            this[this.selecter].x = this.input.mousePointer.x ;
+            this[this.selecter].y = this.input.mousePointer.y ;
         }
         
     },
@@ -266,7 +291,6 @@ var GamePlay = {
     tpWaitress: function() {
         this.waitress.x = this.input.mousePointer.x;
         this.waitress.y = this.input.mousePointer.y;
-        console.log(this.waitress.y);
         
         this.world.bringToTop(this.waitress);
         if (this.waitress.y <= 870) {
@@ -279,6 +303,56 @@ var GamePlay = {
         } else {
             this.world.bringToTop(this.waitress);
         }
+    },
+    
+    manMove: function(sprite) {
+        console.log(sprite.name);
+    },
+    
+    dragStart: function(sprite, pointer) {
+        
+        console.log('drag');
+        this.dragging = true;
+        this.selecter = 'man1';
+        this.world.bringToTop(this.manGroup);
+        this[this.selecter].anchor.setTo(0.5, 0.5);
+        this.dragOrigin = {
+            x: pointer.x,
+            y: pointer.y
+        };
+        this.man1.oldx = this.man1.x;
+        this.man1.oldy = this.man1.y;
+
+//        this.result = "Dragging " + sprite.key;
+    },
+    
+    dragStop: function(sprite, pointer) {
+        console.log("drop");
+        console.log(this);
+        this.dragging = false;
+//        this.result = sprite.key + " dropped at x:" + pointer.x + " y: " + pointer.y;
+//
+//        if (pointer.y > 400)
+//        {
+//            console.log('input disabled on', sprite.key);
+//            sprite.input.enabled = false;
+//
+//            sprite.sendToBack();
+//        }
+        console.log(this.tableList[0].table)
+        if (this.tableList[0].table.input.pointerOver()) {
+            console.log('oui');
+        } else {
+        //events.onInputOver.add(this.placeClient, this);
+            console.log('non');
+            this.man1.x = this.man1.oldx;
+            this.man1.y = this.man1.oldy;
+        }
+    },
+    
+    placeClient: function(sprite, pointer) {
+        console.log('oui');
+        this.man1.kill();
     }
 };
 
