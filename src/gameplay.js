@@ -46,7 +46,7 @@ var GamePlay = {
         for (var i = 2; i > 0; i--){
             this.customers.push( [
                 this.add.sprite(200, 800 - i*100, 'man1'),
-                this.add.sprite(280, 800 - i*100, 'man1')
+                this.add.sprite(280, 800 - i*100, 'man2')
             ]);
         }
         
@@ -191,15 +191,6 @@ var GamePlay = {
 //            item.onChildInputUp.add(this.dragStop, this);
 //        }, this);
         
-        for (var i = 0; i < this.customers.length; i++){
-            this.customerGroupSelected = i;
-            this.customers[i][0].events.onInputDown.add(this.dragStart, this);
-            this.customers[i][0].events.onInputUp.add(this.dragStop, this);
-            
-            this.customers[i][1].events.onInputDown.add(this.dragStart, this);
-            this.customers[i][1].events.onInputUp.add(this.dragStop, this);
-        }
-        
 //        this.manGroup.input.enableDrag();
 //        this.manGroup.callAll('input.enableDrag');
         
@@ -253,13 +244,30 @@ var GamePlay = {
         }
         
         if (this.dragging) {
-            this.customerSelected1.x = this.input.mousePointer.x - 40;
-            this.customerSelected1.y = this.input.mousePointer.y ;
+            this.customerSelected[0].x = this.input.mousePointer.x - 40;
+            this.customerSelected[0].y = this.input.mousePointer.y ;
             
-            this.customerSelected2.x = this.input.mousePointer.x + 40;
-            this.customerSelected2.y = this.input.mousePointer.y ;
+            this.customerSelected[1].x = this.input.mousePointer.x + 40;
+            this.customerSelected[1].y = this.input.mousePointer.y ;
         }
         
+        
+        for (var i = 0; i < this.customers.length; i++){
+            var customerSelected = this.customers[i];
+            if (customerSelected[0].input.pointerDown()) {
+                this.dragStart(customerSelected);
+            }
+            if (customerSelected[0].input.pointerUp()) {
+                this.dragStop(customerSelected);
+            }
+            
+            if (customerSelected[1].input.pointerDown()) {
+                this.dragStart(customerSelected);
+            }
+            if (customerSelected[1].input.pointerUp()) {
+                this.dragStop(customerSelected);
+            }
+        }
     },
     
     render: function() {
@@ -375,32 +383,32 @@ var GamePlay = {
         console.log(sprite.name);
     },
     
-    dragStart: function(sprite, pointer) {
+    dragStart: function(customerSelected) {
 //        console.log(sprite);
         console.log('drag');
         this.dragging = true;
 //        this.selecter = 'man1';
         this.dragOrigin = {
-            x: pointer.x,
-            y: pointer.y
+            x: this.input.mousePointer.x,
+            y: this.input.mousePointer.y
         };
-        if (this.customerGroupSelected){
-            this.customerSelected1 = this.customers[this.customerGroupSelected][0];
-            this.customerSelected2 = this.customers[this.customerGroupSelected][1];
-            this.customerSelected1.anchor.setTo(0.5, 0.5);
-            this.customerSelected2.anchor.setTo(0.5, 0.5);
-            this.world.bringToTop(this.customerSelected1);
-            this.world.bringToTop(this.customerSelected2);
-            this.customerSelected1.oldx = this.customerSelected1.x;
-            this.customerSelected1.oldy = this.customerSelected1.y;
-            this.customerSelected2.oldx = this.customerSelected2.x;
-            this.customerSelected2.oldy = this.customerSelected2.y;
+        
+        this.customerSelected = customerSelected;
+        if (this.customerSelected){
+            this.customerSelected[0].anchor.setTo(0.5, 0.5);
+            this.customerSelected[1].anchor.setTo(0.5, 0.5);
+            this.world.bringToTop(this.customerSelected[0]);
+            this.world.bringToTop(this.customerSelected[1]);
+//            this.customerSelected1.oldx = this.customerSelected1.x;
+//            this.customerSelected1.oldy = this.customerSelected1.y;
+//            this.customerSelected2.oldx = this.customerSelected2.x;
+//            this.customerSelected2.oldy = this.customerSelected2.y;
         }
 
 //        this.result = "Dragging " + sprite.key;
     },
     
-    dragStop: function(sprite, pointer) {
+    dragStop: function(customerSelected) {
         console.log("drop");
         console.log(this);
 
@@ -408,9 +416,10 @@ var GamePlay = {
             this.tableSelected = i;
 //            this.tables[i][2].events.onInputOver.add(this.placeClient, this);
             if (this.tables[i][2].input.pointerOver()) {
-                this.placeClient(sprite, pointer);
+                this.placeClient();
             }
         }
+        
         
 //        this.tableGroup.onChildInputOver.add(this.placeClient, this); 
 
@@ -443,7 +452,7 @@ var GamePlay = {
 //        }
     },
     
-    placeClient: function(sprite, pointer) {
+    placeClient: function(customerSelected) {
         
         if (this.dragging) {
             console.log('oui');
@@ -452,6 +461,8 @@ var GamePlay = {
 //            }, this);
             this.tables[this.tableSelected][0].visible = false;
             this.tables[this.tableSelected][1].visible = false;
+            this.customerSelected[0].visible = false;
+            this.customerSelected[1].visible = false;
 
         }
 //        this.customerSelected1.kill();
