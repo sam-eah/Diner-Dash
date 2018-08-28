@@ -86,6 +86,14 @@ var Preload = {
         this.load.spritesheet('waitress_side',
                               'assets/spitesheets/waitress/side.png', 512, 775);
         
+        // BOY 1
+        this.load.spritesheet('boy1_eating',
+                              'assets/spitesheets/boy1/eating.png', 180, 281);
+        this.load.spritesheet('boy1_ideal',
+                              'assets/spitesheets/boy1/ideal.png', 180, 281);
+        this.load.spritesheet('boy1_order',
+                              'assets/spitesheets/boy1/order.png', 180, 281);
+        
 //        this.loadImage('second_bg',   './assets/sprites/bg.png');
 //        this.loadImage('btn',         './assets/sprites/btn.png');
 //        this.loadImage('cloud1',      './assets/sprites/cloud1.png');

@@ -41,60 +41,111 @@ var GamePlay = {
         this.add.sprite(860, 430, 'foodcover');
         
         // CUSTOMERS
+        this.customers = [];
+        
+        for (var i = 2; i > 0; i--){
+            this.customers.push( [
+                this.add.sprite(200, 800 - i*100, 'man1'),
+                this.add.sprite(280, 800 - i*100, 'man1')
+            ]);
+        }
+        
+        for (var i = 0; i < this.customers.length; i++){
+            this.customers[i][0].enableBody = true;
+            this.customers[i][0].physicsBodyType = Phaser.Physics.ARCADE;
+            this.customers[i][0].inputEnabled = true;
+            
+            this.customers[i][1].enableBody = true;
+            this.customers[i][1].physicsBodyType = Phaser.Physics.ARCADE;
+            this.customers[i][1].inputEnabled = true;
+        }
+        
         this.girlGroup = this.add.group();
-        this.girl1 = this.add.sprite(40, 760, 'girl1');
-        this.girl1.anchor.setTo(0.5, 1);
-        this.girl2 = this.add.sprite(120, 760, 'girl2');
-        this.girl2.anchor.setTo(0.5, 1);
-        this.girlGroup.add(this.girl1);
-        this.girlGroup.add(this.girl2);
+//        this.girlGroup.create(40, 760, 'girl1');
+//        this.girlGroup.create(120, 760, 'girl2');
+        
+        this.girlGroup.inputEnableChildren = true;
+        this.girlGroup.setAll('inputEnabled', true);
         
         this.manGroup = this.add.group();
-        this.man1 = this.add.sprite(200, 700, 'man1');
-        this.man2 = this.add.sprite(280, 700, 'man2');
+//        this.manGroup.create(200, 700, 'man1');
+//        this.manGroup.create(280, 700, 'man2');
         
-        this.man1.enableBody = true;
-        this.man1.physicsBodyType = Phaser.Physics.ARCADE;
-        this.man1.inputEnabled = true;
+        this.manGroup.inputEnableChildren = true;
+        this.manGroup.setAll('inputEnabled', true);
         
-        this.manGroup.add(this.man1);
-        this.manGroup.add(this.man2);
+//        this.customers = this.add.group();
+//        this.customers.add(this.manGroup);
+//        this.customers.add(this.girlGroup);
+//        this.customers.create(100, 100, 'man1', null, false);
         
+        this.customers.enableBody = true;
+        this.customers.physicsBodyType = Phaser.Physics.ARCADE;
+        this.customers.inputEnabled = true;
 
         
 //        this.tableGroup = []
         this.tableList = [];
-        this.priorityGroup = [];
+        this.priorityGroup = [this.add.group(), this.add.group()];
+        
+        this.tableGroup = this.add.group();
+        this.tableGroup.enableBody = true;
+        this.tableGroup.physicsBodyType = Phaser.Physics.ARCADE;
+        
+        
+        this.tables = [];
+        
         
         for (var y = 0; y < 2; y++){
-            newgroup = this.add.group();
+            this.priorityGroup[y].enableBody = true;
+            this.priorityGroup[y].physicsBodyType = Phaser.Physics.ARCADE;
             
             for (var x = 0; x < 3; x++) {
+                var newgroup = this.add.group();
                 newgroup.enableBody = true;
                 newgroup.physicsBodyType = Phaser.Physics.ARCADE;
                 
-                var tableSet = {
-                    table: this.add.sprite(COLX[x], ROWY[y], 'table'),
-                    chair1: chair1 = this.add.sprite(COLX[x] + 150, ROWY[y] -20, 'chair'),
-                    chair2: this.add.sprite(COLX[x], ROWY[y] -20, 'chair')
-                };
-                tableSet.chair2.scale.setTo(-1, 1);
+                this.tables.push([
+                    this.add.sprite(COLX[x] + 150, ROWY[y] -20, 'chair'),
+                    this.add.sprite(COLX[x], ROWY[y] -20, 'chair'),
+                    this.add.sprite(COLX[x], ROWY[y], 'table')
+                ]);
+                this.tables[this.tables.length - 1][1].scale.setTo(-1, 1);
                 
-                newgroup.add( tableSet.chair1 );
-                newgroup.add( tableSet.chair2 );
-                newgroup.add( tableSet.table );
+                newgroup.add( this.tables[this.tables.length - 1][0] );
+                newgroup.add( this.tables[this.tables.length - 1][1] );
+                newgroup.add( this.tables[this.tables.length - 1][2] );
                 
-                this.tableList.push(tableSet);
+                newgroup.moveAll(this.priorityGroup[y]);
+                
+                this.tableGroup.add(newgroup);
                 
             }
-//            this.tableGroup[0].moveAll(newgroup);
-//            this.tableGroup[1].moveAll(newgroup);
-//            this.tableGroup[2].moveAll(newgroup);
+        
+            this.priorityGroup[y].inputEnableChildren = true;
+            this.priorityGroup[y].setAll('inputEnabled', true);            
             
-            this.priorityGroup.push(newgroup);
+            this.priorityGroup.push(this.priorityGroup[y]);
             
         }
         
+        for (var i = 0; i < this.tables.length; i++){
+            this.tables[i][0].enableBody = true;
+            this.tables[i][0].physicsBodyType = Phaser.Physics.ARCADE;
+            this.tables[i][0].inputEnabled = true;
+            
+            this.tables[i][1].enableBody = true;
+            this.tables[i][1].physicsBodyType = Phaser.Physics.ARCADE;
+            this.tables[i][1].inputEnabled = true;
+            
+            this.tables[i][2].enableBody = true;
+            this.tables[i][2].physicsBodyType = Phaser.Physics.ARCADE;
+            this.tables[i][2].inputEnabled = true;
+        }
+        
+        
+        this.priorityGroup[0].moveAll(this.tableGroup);
+        this.priorityGroup[1].moveAll(this.tableGroup);
         
         this.podium = this.add.sprite(430, 850, 'podium');
         this.closeSign = this.add.sprite(220, 920, 'close');
@@ -129,18 +180,30 @@ var GamePlay = {
         this.waitress.animations.play('ideal');
         
         
-//        this.manGroup.inputEnableChildren = true;
-//        this.man1.inputEnabled = true;
 //        this.man1.events.onInputDown.add(this.manMove, this);
         
-        this.manGroup.setAll('inputEnabled', true);
-        this.manGroup.onChildInputDown.add(this.dragStart, this);
-        this.manGroup.onChildInputUp.add(this.dragStop, this);
+//        this.customers.setAll('inputEnabled', true);
+//        this.customers.onChildInputDown.add(this.dragStart, this);
+//        this.customers.onChildInputUp.add(this.dragStop, this);
+        
+//        this.customers.forEach(function(item) {
+//            item.onChildInputDown.add(this.dragStart, this);
+//            item.onChildInputUp.add(this.dragStop, this);
+//        }, this);
+        
+        for (var i = 0; i < this.customers.length; i++){
+            this.customerGroupSelected = i;
+            this.customers[i][0].events.onInputDown.add(this.dragStart, this);
+            this.customers[i][0].events.onInputUp.add(this.dragStop, this);
+            
+            this.customers[i][1].events.onInputDown.add(this.dragStart, this);
+            this.customers[i][1].events.onInputUp.add(this.dragStop, this);
+        }
         
 //        this.manGroup.input.enableDrag();
 //        this.manGroup.callAll('input.enableDrag');
         
-        this.game.debug.body(this.man1, 'rgba(255,0,0,0.5)');
+//        this.game.debug.body(this.man1, 'rgba(255,0,0,0.5)');
         this.game.debug.reset();
 //        console.log(this);
 
@@ -179,7 +242,7 @@ var GamePlay = {
         }
         
         
-        this.input.onDown.addOnce(this.tpWaitress, this);
+//        this.input.onDown.addOnce(this.tpWaitress, this);
         
         
 //        for (var i = 0; i < 6; i++){
@@ -190,8 +253,11 @@ var GamePlay = {
         }
         
         if (this.dragging) {
-            this[this.selecter].x = this.input.mousePointer.x ;
-            this[this.selecter].y = this.input.mousePointer.y ;
+            this.customerSelected1.x = this.input.mousePointer.x - 40;
+            this.customerSelected1.y = this.input.mousePointer.y ;
+            
+            this.customerSelected2.x = this.input.mousePointer.x + 40;
+            this.customerSelected2.y = this.input.mousePointer.y ;
         }
         
     },
@@ -310,18 +376,26 @@ var GamePlay = {
     },
     
     dragStart: function(sprite, pointer) {
-        
+//        console.log(sprite);
         console.log('drag');
         this.dragging = true;
-        this.selecter = 'man1';
-        this.world.bringToTop(this.manGroup);
-        this[this.selecter].anchor.setTo(0.5, 0.5);
+//        this.selecter = 'man1';
         this.dragOrigin = {
             x: pointer.x,
             y: pointer.y
         };
-        this.man1.oldx = this.man1.x;
-        this.man1.oldy = this.man1.y;
+        if (this.customerGroupSelected){
+            this.customerSelected1 = this.customers[this.customerGroupSelected][0];
+            this.customerSelected2 = this.customers[this.customerGroupSelected][1];
+            this.customerSelected1.anchor.setTo(0.5, 0.5);
+            this.customerSelected2.anchor.setTo(0.5, 0.5);
+            this.world.bringToTop(this.customerSelected1);
+            this.world.bringToTop(this.customerSelected2);
+            this.customerSelected1.oldx = this.customerSelected1.x;
+            this.customerSelected1.oldy = this.customerSelected1.y;
+            this.customerSelected2.oldx = this.customerSelected2.x;
+            this.customerSelected2.oldy = this.customerSelected2.y;
+        }
 
 //        this.result = "Dragging " + sprite.key;
     },
@@ -329,7 +403,26 @@ var GamePlay = {
     dragStop: function(sprite, pointer) {
         console.log("drop");
         console.log(this);
+
+        for (var i = 0; i < this.tables.length; i++){
+            this.tableSelected = i;
+//            this.tables[i][2].events.onInputOver.add(this.placeClient, this);
+            if (this.tables[i][2].input.pointerOver()) {
+                this.placeClient(sprite, pointer);
+            }
+        }
+        
+//        this.tableGroup.onChildInputOver.add(this.placeClient, this); 
+
+//        this.tableGroup.forEach(function(item) {
+//            this.tableSelected = item;
+//            if (item.input.pointerOver()) {
+//                console.log('oui');
+//            }
+//        }, this);
+        
         this.dragging = false;
+        
 //        this.result = sprite.key + " dropped at x:" + pointer.x + " y: " + pointer.y;
 //
 //        if (pointer.y > 400)
@@ -339,20 +432,33 @@ var GamePlay = {
 //
 //            sprite.sendToBack();
 //        }
-        console.log(this.tableList[0].table)
-        if (this.tableList[0].table.input.pointerOver()) {
-            console.log('oui');
-        } else {
-        //events.onInputOver.add(this.placeClient, this);
-            console.log('non');
-            this.man1.x = this.man1.oldx;
-            this.man1.y = this.man1.oldy;
-        }
+//        console.log(this.tableList[0].table)
+//        if (this.tableList[0].table.input.pointerOver()) {
+//            console.log('oui');
+//        } else {
+//        //events.onInputOver.add(this.placeClient, this);
+//            console.log('non');
+//            this.customerSelected1.x = this.customerSelected1.oldx;
+//            this.customerSelected1.y = this.customerSelected1.oldy;
+//        }
     },
     
     placeClient: function(sprite, pointer) {
-        console.log('oui');
-        this.man1.kill();
+        
+        if (this.dragging) {
+            console.log('oui');
+//            sprite.parent.forEach(function(item) {
+//                item.visible = false;
+//            }, this);
+            this.tables[this.tableSelected][0].visible = false;
+            this.tables[this.tableSelected][1].visible = false;
+
+        }
+//        this.customerSelected1.kill();
+    },
+    
+    lineDisplay: function() {
+        this.customerList
     }
 };
 
