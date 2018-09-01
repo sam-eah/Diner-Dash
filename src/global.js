@@ -8,9 +8,9 @@ var FB_SHARE_FAILED = "FB SHARE FAILED";
 var CANVAS_WIDTH = 1920;
 var CANVAS_HEIGHT = 1080;
 
-var COLX = [780, 1180, 1580];
+var COLX = [858, 1258, 1658];
 
-var ROWY = [700, 880];
+var ROWY = [838, 1018];
 
 var CNT_CANDIES = 6;
 

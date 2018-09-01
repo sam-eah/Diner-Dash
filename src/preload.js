@@ -86,6 +86,14 @@ var Preload = {
         this.load.spritesheet('waitress_side',
                               'assets/spitesheets/waitress/side.png', 512, 775);
         
+        this.load.spritesheet('waitress_back_food',
+                              'assets/spitesheets/waitress/back_food.png', 300, 775);
+        this.load.spritesheet('waitress_front_food',
+                              'assets/spitesheets/waitress/front_food.png', 300, 775);
+        this.load.spritesheet('waitress_side_food',
+                              'assets/spitesheets/waitress/side_food.png', 512, 775);
+        
+        
         // BOY 1
         this.load.spritesheet('boy1_eating',
                               'assets/spitesheets/boy1/eating.png', 180, 281);
