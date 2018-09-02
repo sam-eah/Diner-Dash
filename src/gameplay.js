@@ -383,7 +383,7 @@ var GamePlay = {
         
         if (!this.dragging) {
             console.log('drag');
-//            this.dragOrigin = this.input.mousePointer.x;
+//            this.dragOrigin = this.input.mousePointer;
 
             if (customer){
                 this.world.bringToTop(customer[0]);
@@ -458,10 +458,6 @@ var GamePlay = {
         this.customers.splice(customerIndex);
 
         this.time.events.add(2000, this.createOrder, this, tableIndex);
-    },
-    
-    lineDisplay: function() {
-        this.customerList
     },
     
     goToTable: function(tableIndex) {
