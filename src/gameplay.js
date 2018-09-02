@@ -27,7 +27,10 @@ var GamePlay = {
         this.physics.startSystem(Phaser.Physics.ARCADE);
         
         // BG
-        this.add.sprite(0, 0, 'background');
+        this.background = this.add.sprite(0, 0, 'background');
+        this.background.enableBody = true;
+        this.background.physicsBodyType = Phaser.Physics.ARCADE;
+        this.background.inputEnabled = true;
         
         // UI 
         this.add.sprite(140, 20, 'hud_base');
@@ -36,11 +39,18 @@ var GamePlay = {
         this.add.sprite(1830, 10, 'pause');
         
         // COOK
-        this.cook1 = this.add.sprite(1250, 300, 'cook_front');
+        this.cook1 = this.add.sprite(1250, 580, 'cook_front');
         this.cook1.scale.setTo(0.9);
+        this.cook1.anchor.setTo(0.5, 1);
+        this.cook1.enableBody = true;
+        this.cook1.physicsBodyType = Phaser.Physics.ARCADE;
+        this.cook1.inputEnabled = true;
         
         this.cook2 = this.add.sprite(1000, 180, 'cook_back');
         this.cook2.scale.setTo(0.9);
+        this.cook2.enableBody = true;
+        this.cook2.physicsBodyType = Phaser.Physics.ARCADE;
+        this.cook2.inputEnabled = true;
         
         // COUNTER
         this.add.sprite(450, 350, 'counter');
@@ -59,6 +69,7 @@ var GamePlay = {
             this.foods[i].physicsBodyType = Phaser.Physics.ARCADE;
             this.foods[i].inputEnabled = true;
             this.foods[i].anchor.setTo(0.5, 1);
+            this.foods[i].visible = false;
         }
         
         this.foods.enableBody = true;
@@ -235,7 +246,7 @@ var GamePlay = {
             if (table[0].input.pointerDown() ||
                 table[1].input.pointerDown() ||
                 table[2].input.pointerDown()) {
-                this.goToTable(table);
+                this.goToTable(i);
             }
         }    
         
@@ -245,6 +256,17 @@ var GamePlay = {
                 this.goToFood(food);
             }
         }    
+
+        if (this.cook1.input.pointerDown()) {
+            this.goToCook();
+        }    
+
+        if (this.background.input.pointerDown()) {
+            if (Math.abs(1550 - this.input.mousePointer.x) < 50 &&
+                Math.abs(470 - this.input.mousePointer.y) < 100) {
+                this.goToBin();
+            }
+        }
         
         
     },
@@ -399,10 +421,10 @@ var GamePlay = {
             var clientPlaced = false;
 
             for (var i = 0; i < this.tables.length; i++){
-                var tableSelected = this.tables[i];
+                var table = this.tables[i];
 
-                if (tableSelected[2].input.pointerOver()) {
-                    this.placeClient(customerSelected, tableSelected);
+                if (table[2].input.pointerOver()) {
+                    this.placeClient(customerSelected, i);
                     clientPlaced = true;
                 }
             }
@@ -415,8 +437,7 @@ var GamePlay = {
                 this.customerSelected[1].y = this.customerSelected[1].oldy;
             }
 
-            this.customerSelected = null;
-            this.tableSelected = null;
+            this.customerSelectedIndex = null;
             
             this.dragging = false;
             this.stopDragging = true;
@@ -424,20 +445,14 @@ var GamePlay = {
         
     },
     
-    placeClient: function(customerSelected, tableSelected) {
+    placeClient: function(customerSelected, tableIndex) {
+        console.log('oui');
+        var table = this.tables[tableIndex];
         
-//        if (this.dragging) {
-            console.log('oui');
-//            tableSelected[0].visible = false;
-//            tableSelected[1].visible = false;
-        tableSelected[0].loadTexture('boy1_ideal', 0, false);
-//        tableSelected[0].x =600;
-//        tableSelected[0].y =400;
-        tableSelected[0].scale.setTo(1, 1);
-        tableSelected[1].loadTexture('boy1_ideal', 0, false);
-//        tableSelected[0].x =800;
-//        tableSelected[0].y =400;
-        tableSelected[1].scale.setTo(-1, 1);
+        table[0].loadTexture('boy1_ideal', 0, false);
+        table[0].scale.setTo(1, 1);
+        table[1].loadTexture('boy1_ideal', 0, false);
+        table[1].scale.setTo(-1, 1);
         
         var index = this.customers.indexOf(customerSelected);
         this.customers.splice(index);
@@ -446,20 +461,33 @@ var GamePlay = {
         customerSelected[1].visible = false;
         customerSelected[0].enableBody = false;
         customerSelected[1].enableBody = false;
+        
+        table.customer = true;
 
-//        }
+        this.time.events.add(2000, this.createOrder, this, tableIndex);
     },
     
     lineDisplay: function() {
         this.customerList
     },
     
-    goToTable: function(table) {
+    goToTable: function(tableIndex) {
+        var table = this.tables[tableIndex];
         this.waitress.x = table[2].x ;
         this.waitress.y = table[2].y - 50 ;
         
-        if (this.withFood == '_food'){
-            this.giveFood(table);
+        if (table.orderReady) {
+            this.takeOrder(tableIndex);
+            table.orderReady = false;
+        }
+        
+        if (table.finishEating) {
+            this.takePlate(tableIndex);
+            table.finishEating = false;
+        }
+        
+        if (table.customer && this.withFood == '_food'){
+            this.giveFood(tableIndex);
         }
         
         this.animDown();
@@ -481,14 +509,72 @@ var GamePlay = {
         
     },
     
+    goToCook: function() {
+        this.waitress.x = this.cook1.x ;
+        this.waitress.y = this.cook1.y + 100 ;
+        
+        this.animUp();
+        this.animStop();
+        this.doPriority();
+        
+        if (this.orderSelected >= 0){
+            this.giveOrder();
+            this.orderSelected = -1;
+        }
+        
+    },
+    
+    goToBin: function() {
+        this.waitress.x = 1550 ;
+        this.waitress.y = 650 ;
+                
+        if (this.withFood) {
+            this.givePlate();
+        }
+        
+        this.animUp();
+        this.animStop();
+        this.doPriority();
+        
+    },
+    
+    createOrder: function(tableIndex) {
+        console.log('order Ready');
+        var table = this.tables[tableIndex];
+        table.orderReady = true;
+    },
+    
+    takeOrder: function(tableIndex) {
+        console.log('take Order');
+        this.orderSelected = tableIndex;
+        console.log(this.orderSelected);
+    },
+    
+    giveOrder: function() {
+        console.log('give Order');
+        var tableIndex = this.orderSelected;
+        this.time.events.add(2000, this.createFood, this, tableIndex);
+    },
+    
+    createFood: function(tableIndex) {
+        var food = this.foods[tableIndex];
+
+        console.log('Food Created');
+        console.log(tableIndex);
+        food.visible = true;
+    },
+    
     takeFood: function(food){
+        console.log('take food');
         this.withFood = '_food';
         food.visible = false;
         food.enableBody = false;
     },
     
-    giveFood: function(table){
+    giveFood: function(tableIndex){
+        console.log('give food');
         var key = (Math.floor(Math.random() * 6) + 1).toString();
+        var table = this.tables[tableIndex];
         table.food = this.add.sprite(table[2].x, table[2].y - 80, 'food' + key);
         table.food.anchor.setTo(0.5, 1);
         if (this.tables.indexOf(table) < 3) {
@@ -497,6 +583,40 @@ var GamePlay = {
             this.priorityGroup[1].add( table.food );
         }
         this.withFood = '';
+        
+        this.time.events.add(2000, this.finishEating, this, tableIndex);
+    },
+    
+    finishEating: function(tableIndex) {
+        console.log('finish eating');
+        var table = this.tables[tableIndex];
+        
+        table.food.loadTexture('foodcover', 0, false);
+        table.finishEating = true;
+    },
+    
+    takePlate: function(tableIndex){
+        var table = this.tables[tableIndex];
+        var food = table.food;
+
+        console.log('take plate');
+        this.withFood = '_food';
+        food.visible = false;
+        food.enableBody = false;
+        
+        table[0].loadTexture('chair', 0, false);
+        table[0].scale.setTo(-1, 1);
+        table[1].loadTexture('chair', 0, false);
+        table[1].scale.setTo(1, 1);
+        
+        table.customer = false;
+    },
+    
+    givePlate: function(){
+        console.log('throw plate');
+
+        this.withFood = '';
+        
     }
 };
 
