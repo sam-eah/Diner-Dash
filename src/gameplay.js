@@ -363,16 +363,10 @@ var GamePlay = {
     },
     
     doPriority: function() {
-//        this.waitress.x = this.input.mousePointer.x;
-//        this.waitress.y = this.input.mousePointer.y;
-        
-        this.world.bringToTop(this.waitress);
         if (this.waitress.y <= 870) {
             this.world.bringToTop(this.priorityGroup[0]);
             this.world.bringToTop(this.priorityGroup[1]);
-            
         } else if (this.waitress.y <= 1000) {
-            
             this.world.bringToTop(this.waitress);
             this.world.bringToTop(this.priorityGroup[1]);
         } else {
@@ -576,7 +570,7 @@ var GamePlay = {
         var table = this.tables[tableIndex];
         table.food = this.add.sprite(table[2].x, table[2].y - 80, 'food' + key);
         table.food.anchor.setTo(0.5, 1);
-        if (this.tables.indexOf(table) < 3) {
+        if (tableIndex < 3) {
             this.priorityGroup[0].add( table.food );
         } else {
             this.priorityGroup[1].add( table.food );
