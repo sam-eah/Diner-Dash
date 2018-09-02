@@ -8,7 +8,6 @@ var GamePlay = {
     tolerance: 10,
     selecter: 'waitress',
     dragging: false,
-    stopDragging: true,
     foo: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
     tablePos: [ [ {x: COLX[0], y: ROWY[0]}, {x: COLX[1], y: ROWY[0]}, {x: COLX[2], y: ROWY[0]} ], 
                 [ {x: COLX[0], y: ROWY[1]}, {x: COLX[1], y: ROWY[1]}, {x: COLX[2], y: ROWY[1]} ] ],
@@ -233,11 +232,11 @@ var GamePlay = {
             var customer = this.customers[i];
             if (customer[0].input.pointerDown() ||
                 customer[1].input.pointerDown()) {
-                this.dragStart(customer);
+                this.drag(i);
             }
             if (customer[0].input.pointerUp() ||
                 customer[1].input.pointerUp()) {
-                this.dragStop(customer);
+                this.drop(i);
             }
         }
             
@@ -363,16 +362,10 @@ var GamePlay = {
     },
     
     doPriority: function() {
-//        this.waitress.x = this.input.mousePointer.x;
-//        this.waitress.y = this.input.mousePointer.y;
-        
-        this.world.bringToTop(this.waitress);
         if (this.waitress.y <= 870) {
             this.world.bringToTop(this.priorityGroup[0]);
             this.world.bringToTop(this.priorityGroup[1]);
-            
         } else if (this.waitress.y <= 1000) {
-            
             this.world.bringToTop(this.waitress);
             this.world.bringToTop(this.priorityGroup[1]);
         } else {
@@ -384,91 +377,91 @@ var GamePlay = {
         console.log(sprite.name);
     },
     
-    dragStart: function(customerSelected) {
+    drag: function(customerIndex) {
+        
         if (!this.dragging) {
-            console.log('drag');
-            this.dragOrigin = {
-                x: this.input.mousePointer.x,
-                y: this.input.mousePointer.y
-            };
-
-            this.customerSelected = customerSelected;
-            if (this.customerSelected){
-                this.world.bringToTop(this.customerSelected[0]);
-                this.world.bringToTop(this.customerSelected[1]);
-
-                this.customerSelected[0].oldx = this.customerSelected[0].x;
-                this.customerSelected[0].oldy = this.customerSelected[0].y;
-
-                this.customerSelected[1].oldx = this.customerSelected[1].x;
-                this.customerSelected[1].oldy = this.customerSelected[1].y;
-            }
+            this.customerSelectedIndex = customerIndex;
+            this.dragStart();
             this.dragging = true;
-            this.stopDragging = false;
-        } else {
-            this.customerSelected[0].x = this.input.mousePointer.x - 40;
-            this.customerSelected[0].y = this.input.mousePointer.y ;
-            
-            this.customerSelected[1].x = this.input.mousePointer.x + 40;
-            this.customerSelected[1].y = this.input.mousePointer.y ;
         }
-
+        if (this.dragging) {
+            this.dragUpdate();
+        }
     },
     
-    dragStop: function(customerSelected) {
-        if(!this.stopDragging) {
-            console.log("drop");
-            var clientPlaced = false;
-
-            for (var i = 0; i < this.tables.length; i++){
-                var table = this.tables[i];
-
-                if (table[2].input.pointerOver()) {
-                    this.placeClient(customerSelected, i);
-                    clientPlaced = true;
-                }
+    drop: function(customerIndex) {
+        if (customerIndex == this.customerSelectedIndex){
+            if (this.dragging) {
+                this.dragStop();
+                this.dragging = false;
+                this.customerSelectedIndex = null;
             }
+        }
+    },
+    
+    dragStart: function() {
+        console.log('drag start');
+        
+        var customer = this.customers[this.customerSelectedIndex];
+        if (customer){
+            this.world.bringToTop(customer[0]);
+            this.world.bringToTop(customer[1]);
 
-            if (!clientPlaced && this.customerSelected) {
-                this.customerSelected[0].x = this.customerSelected[0].oldx;
-                this.customerSelected[0].y = this.customerSelected[0].oldy;
-
-                this.customerSelected[1].x = this.customerSelected[1].oldx;
-                this.customerSelected[1].y = this.customerSelected[1].oldy;
-            }
-
-            this.customerSelectedIndex = null;
-            
-            this.dragging = false;
-            this.stopDragging = true;
+            customer[0].oldx = customer[0].x;
+            customer[0].oldy = customer[0].y;
+            customer[1].oldx = customer[1].x;
+            customer[1].oldy = customer[1].y;
         }
         
     },
     
-    placeClient: function(customerSelected, tableIndex) {
+    dragUpdate: function() {
+        var customer = this.customers[this.customerSelectedIndex];
+        customer[0].x = this.input.mousePointer.x - 40;
+        customer[0].y = this.input.mousePointer.y ;
+
+        customer[1].x = this.input.mousePointer.x + 40;
+        customer[1].y = this.input.mousePointer.y ;
+    },
+    
+    dragStop: function() {
+        console.log('drag stop');
+        var customer = this.customers[this.customerSelectedIndex];
+
+        customer[0].x = customer[0].oldx;
+        customer[0].y = customer[0].oldy;
+        customer[1].x = customer[1].oldx;
+        customer[1].y = customer[1].oldy;
+        
+        for (var i = 0; i < this.tables.length; i++){
+            var table = this.tables[i];
+
+            if (table[2].input.pointerOver()) {
+                this.placeClient(i);
+            }
+        }
+    },
+    
+    placeClient: function(tableIndex) {
         console.log('oui');
         var table = this.tables[tableIndex];
+        var customer = this.customers[this.customerSelectedIndex];
         
         table[0].loadTexture('boy1_ideal', 0, false);
         table[0].scale.setTo(1, 1);
         table[1].loadTexture('boy1_ideal', 0, false);
         table[1].scale.setTo(-1, 1);
         
-        var index = this.customers.indexOf(customerSelected);
-        this.customers.splice(index);
         
-        customerSelected[0].visible = false;
-        customerSelected[1].visible = false;
-        customerSelected[0].enableBody = false;
-        customerSelected[1].enableBody = false;
+        customer[0].visible = false;
+        customer[1].visible = false;
+        customer[0].enableBody = false;
+        customer[1].enableBody = false;
         
         table.customer = true;
+//        this.customers.splice(customerIndex);
 
         this.time.events.add(2000, this.createOrder, this, tableIndex);
-    },
-    
-    lineDisplay: function() {
-        this.customerList
     },
     
     goToTable: function(tableIndex) {
@@ -577,7 +570,7 @@ var GamePlay = {
         var table = this.tables[tableIndex];
         table.food = this.add.sprite(table[2].x, table[2].y - 80, 'food' + key);
         table.food.anchor.setTo(0.5, 1);
-        if (this.tables.indexOf(table) < 3) {
+        if (tableIndex < 3) {
             this.priorityGroup[0].add( table.food );
         } else {
             this.priorityGroup[1].add( table.food );
