@@ -86,11 +86,18 @@ var GamePlay = {
         this.customers = [];
         
         for (var i = 2; i > 0; i--){
-//            var isBoy = (Math.floor(Math.random() * 2) + 1 == 1);
-            this.customers.push( [
-                this.add.sprite(200, 900 - i*100, 'boy1'),
-                this.add.sprite(280, 900 - i*100, 'boy2')
-            ]);
+            var isBoy = (Math.floor(Math.random() * 2) == 1);
+            if (isBoy) {
+                this.customers.push( [
+                    this.add.sprite(200, 900 - i*100, 'boy1'),
+                    this.add.sprite(280, 900 - i*100, 'boy2')
+                ]);
+            } else {
+                this.customers.push( [
+                    this.add.sprite(200, 900 - i*100, 'girl1'),
+                    this.add.sprite(280, 900 - i*100, 'girl2')
+                ]);
+            }
         }
         
         for (var i = 0; i < this.customers.length; i++){
@@ -148,19 +155,19 @@ var GamePlay = {
             
         }
         
-        for (var i = 0; i < this.tables.length; i++){
-            this.tables[i][0].enableBody = true;
-            this.tables[i][0].physicsBodyType = Phaser.Physics.ARCADE;
-            this.tables[i][0].inputEnabled = true;
-            
-            this.tables[i][1].enableBody = true;
-            this.tables[i][1].physicsBodyType = Phaser.Physics.ARCADE;
-            this.tables[i][1].inputEnabled = true;
-            
-            this.tables[i][2].enableBody = true;
-            this.tables[i][2].physicsBodyType = Phaser.Physics.ARCADE;
-            this.tables[i][2].inputEnabled = true;
-        }
+//        for (var i = 0; i < this.tables.length; i++){
+//            this.tables[i][0].enableBody = true;
+//            this.tables[i][0].physicsBodyType = Phaser.Physics.ARCADE;
+//            this.tables[i][0].inputEnabled = true;
+//            
+//            this.tables[i][1].enableBody = true;
+//            this.tables[i][1].physicsBodyType = Phaser.Physics.ARCADE;
+//            this.tables[i][1].inputEnabled = true;
+//            
+//            this.tables[i][2].enableBody = true;
+//            this.tables[i][2].physicsBodyType = Phaser.Physics.ARCADE;
+//            this.tables[i][2].inputEnabled = true;
+//        }
         
         
         this.podium = this.add.sprite(430, 850, 'podium');
@@ -476,12 +483,12 @@ var GamePlay = {
         var table = this.tables[tableIndex];
         var customer = this.customers[this.customerSelectedIndex];        
         
-        table[0].loadTexture(customer[0].key, 0, false);
+        table[0].loadTexture(customer[0].key + '_ideal' , 0, false);
         table[0].scale.setTo(1, 1);
         table[0].hand = this.add.sprite(table[0].x, table[0].y, table[0].key + '_hand');
         table[0].hand.anchor.setTo(0.5, 1);
         
-        table[1].loadTexture(customer[1].key, 0, false);
+        table[1].loadTexture(customer[1].key + '_ideal' , 0, false);
         table[1].scale.setTo(-1, 1);
         table[1].hand = this.add.sprite(table[1].x, table[1].y, table[0].key + '_hand');
         table[1].hand.anchor.setTo(0.5, 1);
