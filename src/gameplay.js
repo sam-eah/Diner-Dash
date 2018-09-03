@@ -86,6 +86,7 @@ var GamePlay = {
         this.customers = [];
         
         for (var i = 2; i > 0; i--){
+//            var isBoy = true;
             var isBoy = (Math.floor(Math.random() * 2) == 1);
             if (isBoy) {
                 this.customers.push( [
