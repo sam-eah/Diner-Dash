@@ -63,10 +63,10 @@ var Preload = {
         this.loadImage('cook_front',    './assets/sprites/cook_front.png');
         
         // CUSTOMERS 
-        this.loadImage('man1',          './assets/sprites/man1.png');
+        this.loadImage('boy1',          './assets/sprites/man1.png');
         this.loadImage('man1_sit',      './assets/sprites/man1_sit.png');
         
-        this.loadImage('man2',          './assets/sprites/man2.png');
+        this.loadImage('boy2',          './assets/sprites/man2.png');
         this.loadImage('man2_sit',      './assets/sprites/man2_sit.png');
         
         this.loadImage('girl1',         './assets/sprites/girl1.png');
@@ -101,6 +101,54 @@ var Preload = {
                               'assets/spitesheets/boy1/ideal.png', 180, 281);
         this.load.spritesheet('boy1_order',
                               'assets/spitesheets/boy1/order.png', 180, 281);
+        this.load.spritesheet('boy1_eating_hand',
+                              'assets/spitesheets/boy1/eating_hand.png', 180, 281);
+        this.load.spritesheet('boy1_ideal_hand',
+                              'assets/spitesheets/boy1/ideal_hand.png', 180, 281);
+        this.load.spritesheet('boy1_order_hand',
+                              'assets/spitesheets/boy1/order_hand.png', 180, 281);
+        
+        // BOY 2
+        this.load.spritesheet('boy2_eating',
+                              'assets/spitesheets/boy2/eating.png', 180, 281);
+        this.load.spritesheet('boy2_ideal',
+                              'assets/spitesheets/boy2/ideal.png', 180, 281);
+        this.load.spritesheet('boy2_order',
+                              'assets/spitesheets/boy2/order.png', 180, 281);
+        this.load.spritesheet('boy2_eating_hand',
+                              'assets/spitesheets/boy2/eating_hand.png', 180, 281);
+        this.load.spritesheet('boy2_ideal_hand',
+                              'assets/spitesheets/boy2/ideal_hand.png', 180, 281);
+        this.load.spritesheet('boy2_order_hand',
+                              'assets/spitesheets/boy2/order_hand.png', 180, 281);
+        
+        // GIRL 1
+        this.load.spritesheet('girl1_eating',
+                              'assets/spitesheets/boy1/eating.png', 180, 281);
+        this.load.spritesheet('girl1_ideal',
+                              'assets/spitesheets/boy1/ideal.png', 180, 281);
+        this.load.spritesheet('girl1_order',
+                              'assets/spitesheets/boy1/order.png', 180, 281);
+        this.load.spritesheet('girl1_eating_hand',
+                              'assets/spitesheets/boy1/eating_hand.png', 180, 281);
+        this.load.spritesheet('girl1_ideal_hand',
+                              'assets/spitesheets/boy1/ideal_hand.png', 180, 281);
+        this.load.spritesheet('girl1_order_hand',
+                              'assets/spitesheets/boy1/order_hand.png', 180, 281);
+        
+        // GIRL 2
+        this.load.spritesheet('girl2_eating',
+                              'assets/spitesheets/boy2/eating.png', 180, 281);
+        this.load.spritesheet('girl2_ideal',
+                              'assets/spitesheets/boy2/ideal.png', 180, 281);
+        this.load.spritesheet('girl2_order',
+                              'assets/spitesheets/boy2/order.png', 180, 281);
+        this.load.spritesheet('girl2_eating_hand',
+                              'assets/spitesheets/boy2/eating_hand.png', 180, 281);
+        this.load.spritesheet('girl2_ideal_hand',
+                              'assets/spitesheets/boy2/ideal_hand.png', 180, 281);
+        this.load.spritesheet('girl2_order_hand',
+                              'assets/spitesheets/boy2/order_hand.png', 180, 281);
         
 //        this.loadImage('second_bg',   './assets/sprites/bg.png');
 //        this.loadImage('btn',         './assets/sprites/btn.png');

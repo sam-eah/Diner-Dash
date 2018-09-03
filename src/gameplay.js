@@ -9,6 +9,11 @@ var GamePlay = {
     selecter: 'waitress',
     dragging: false,
     foo: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    customerAnim: {
+        eating: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+        ideal: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        order: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]
+    },
     tablePos: [ [ {x: COLX[0], y: ROWY[0]}, {x: COLX[1], y: ROWY[0]}, {x: COLX[2], y: ROWY[0]} ], 
                 [ {x: COLX[0], y: ROWY[1]}, {x: COLX[1], y: ROWY[1]}, {x: COLX[2], y: ROWY[1]} ] ],
 //    image_path: '',
@@ -81,9 +86,10 @@ var GamePlay = {
         this.customers = [];
         
         for (var i = 2; i > 0; i--){
+//            var isBoy = (Math.floor(Math.random() * 2) + 1 == 1);
             this.customers.push( [
-                this.add.sprite(200, 900 - i*100, 'man1'),
-                this.add.sprite(280, 900 - i*100, 'man2')
+                this.add.sprite(200, 900 - i*100, 'boy1'),
+                this.add.sprite(280, 900 - i*100, 'boy2')
             ]);
         }
         
@@ -246,6 +252,17 @@ var GamePlay = {
                 table[1].input.pointerDown() ||
                 table[2].input.pointerDown()) {
                 this.goToTable(i);
+            }
+            if (table.food) {
+                if (table.food.input.pointerDown()) {
+                    this.goToTable(i);
+                }
+            }
+            if (table.customer) {
+                if (table[0].hand.input.pointerDown() ||
+                    table[1].hand.input.pointerDown()) {
+                    this.goToTable(i);
+                }
             }
         }    
         
@@ -442,16 +459,46 @@ var GamePlay = {
         }
     },
     
+    changeCustomerAnim: function(tableIndex, chair, animation){
+        var table = this.tables[tableIndex];
+        var key = table[chair].key.split('_')[0] ;
+        table[chair].loadTexture(key + '_' + animation, 0, false);
+        table[chair].animations.add(animation, this.customerAnim[animation], 10, true);
+        table[chair].animations.play(animation);
+
+        table[chair].hand.loadTexture(key + '_' + animation + '_hand', 0, false);
+        table[chair].hand.animations.add(animation, this.customerAnim[animation], 10, true);
+        table[chair].hand.animations.play(animation);
+    },
+    
     placeClient: function(tableIndex) {
         console.log('oui');
         var table = this.tables[tableIndex];
-        var customer = this.customers[this.customerSelectedIndex];
+        var customer = this.customers[this.customerSelectedIndex];        
         
-        table[0].loadTexture('boy1_ideal', 0, false);
+        table[0].loadTexture(customer[0].key, 0, false);
         table[0].scale.setTo(1, 1);
-        table[1].loadTexture('boy1_ideal', 0, false);
-        table[1].scale.setTo(-1, 1);
+        table[0].hand = this.add.sprite(table[0].x, table[0].y, table[0].key + '_hand');
+        table[0].hand.anchor.setTo(0.5, 1);
         
+        table[1].loadTexture(customer[1].key, 0, false);
+        table[1].scale.setTo(-1, 1);
+        table[1].hand = this.add.sprite(table[1].x, table[1].y, table[0].key + '_hand');
+        table[1].hand.anchor.setTo(0.5, 1);
+        table[1].hand.scale.setTo(-1, 1);
+        
+        this.changeCustomerAnim(tableIndex, 0, 'ideal');
+        this.changeCustomerAnim(tableIndex, 1, 'ideal');
+        
+        console.log(table[0].key);
+        
+        if (tableIndex < 3) {
+            this.priorityGroup[0].add( table[0].hand );
+            this.priorityGroup[0].add( table[1].hand );
+        } else {
+            this.priorityGroup[1].add( table[0].hand );
+            this.priorityGroup[1].add( table[1].hand );
+        }
         
         customer[0].visible = false;
         customer[1].visible = false;
@@ -532,13 +579,21 @@ var GamePlay = {
     },
     
     createOrder: function(tableIndex) {
-        console.log('order Ready');
+        console.log('order Ready');        
+        
+        this.changeCustomerAnim(tableIndex, 0, 'order');
+        this.changeCustomerAnim(tableIndex, 1, 'order');
+        
         var table = this.tables[tableIndex];
         table.orderReady = true;
     },
     
     takeOrder: function(tableIndex) {
         console.log('take Order');
+        
+        this.changeCustomerAnim(tableIndex, 0, 'ideal');
+        this.changeCustomerAnim(tableIndex, 1, 'ideal');
+        
         this.orderSelected = tableIndex;
         console.log(this.orderSelected);
     },
@@ -566,6 +621,10 @@ var GamePlay = {
     
     giveFood: function(tableIndex){
         console.log('give food');
+        
+        this.changeCustomerAnim(tableIndex, 0, 'eating');
+        this.changeCustomerAnim(tableIndex, 1, 'eating');
+        
         var key = (Math.floor(Math.random() * 6) + 1).toString();
         var table = this.tables[tableIndex];
         table.food = this.add.sprite(table[2].x, table[2].y - 80, 'food' + key);
@@ -582,6 +641,10 @@ var GamePlay = {
     
     finishEating: function(tableIndex) {
         console.log('finish eating');
+        
+        this.changeCustomerAnim(tableIndex, 0, 'order');
+        this.changeCustomerAnim(tableIndex, 1, 'order');
+        
         var table = this.tables[tableIndex];
         
         table.food.loadTexture('foodcover', 0, false);
@@ -599,8 +662,11 @@ var GamePlay = {
         
         table[0].loadTexture('chair', 0, false);
         table[0].scale.setTo(-1, 1);
+        table[0].hand.visible = false;
+        
         table[1].loadTexture('chair', 0, false);
         table[1].scale.setTo(1, 1);
+        table[1].hand.visible = false;
         
         table.customer = false;
     },
