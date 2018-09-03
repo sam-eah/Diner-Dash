@@ -76,9 +76,9 @@ var GamePlay = {
             this.foods[i].visible = false;
         }
         
-        this.foods.enableBody = true;
-        this.foods.physicsBodyType = Phaser.Physics.ARCADE;
-        this.foods.inputEnabled = true;
+//        this.foods.enableBody = true;
+//        this.foods.physicsBodyType = Phaser.Physics.ARCADE;
+//        this.foods.inputEnabled = true;
         
         console.log(this.foods);
         
@@ -113,9 +113,9 @@ var GamePlay = {
         }
         
         
-        this.customers.enableBody = true;
-        this.customers.physicsBodyType = Phaser.Physics.ARCADE;
-        this.customers.inputEnabled = true;
+//        this.customers.enableBody = true;
+//        this.customers.physicsBodyType = Phaser.Physics.ARCADE;
+//        this.customers.inputEnabled = true;
 
         
         this.priorityGroup = [this.add.group(), this.add.group()];
@@ -191,8 +191,7 @@ var GamePlay = {
         
 //        this.waitress.enableBody = true;
         this.waitress.anchor.setTo(0.5, 1);
-        this.waitress.scale.setTo(this.wscale); 
-//        this.waitress.frame = 1;
+        this.waitress.scale.setTo(this.wscale);
         
         this.waitress.animations.add('ideal', this.foo, 10, true);
         this.waitress.animations.play('ideal');
